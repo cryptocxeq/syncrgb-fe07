@@ -7,7 +7,7 @@
 /// BLE/Dongle은 notSyncEffect 래퍼 사용 (20바이트, MAC 포함) — 여기서는 USB HID만 지원
 
 const HEADER_RB: &[u8] = b"RB";
-const MAX_CHUNK_SIZE: usize = 64;
+pub const MAX_CHUNK_SIZE: usize = 64;
 
 /// 액션 코드 (USB HID dedicated protocol)
 mod action {

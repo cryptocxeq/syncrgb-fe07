@@ -17,22 +17,38 @@ pub struct DeviceConnection {
 }
 
 impl DeviceConnection {
-    /// HID 디바이스 연결 (interface 0)
+    /// HID 디바이스 연결
     pub fn connect(_com_port: &str) -> Result<Self, Box<dyn std::error::Error>> {
         let api = HidApi::new()?;
 
-        let dev_info = api.device_list()
-            .find(|d| {
-                d.vendor_id() == VENDOR_ID
-                    && d.product_id() == PRODUCT_ID
-                    && d.interface_number() == 0
-            })
+        let mut candidates: Vec<_> = api
+            .device_list()
+            .filter(|d| d.vendor_id() == VENDOR_ID && d.product_id() == PRODUCT_ID)
+            .collect();
+
+        candidates.sort_by_key(|d| {
+            let is_keyboard = d.usage_page() == 0x0001 && d.usage() == 0x0006;
+            let is_vendor_defined = d.usage_page() >= 0xFF00;
+            let is_interface0 = d.interface_number() == 0;
+            (
+                if is_keyboard { 2 } else { 0 },
+                if is_vendor_defined { 0 } else { 1 },
+                if is_interface0 { 0 } else { 1 },
+            )
+        });
+
+        let dev_info = candidates
+            .into_iter()
+            .next()
             .ok_or_else(|| {
                 log::warn!("HID 디바이스 목록:");
                 for dev in api.device_list() {
-                    log::warn!("  VID={:#06x} PID={:#06x} page={:#06x} if={} {:?}",
+                    log::warn!(
+                        "  VID={:#06x} PID={:#06x} page={:#06x} usage={:#06x} if={} {:?}",
                         dev.vendor_id(), dev.product_id(),
-                        dev.usage_page(), dev.interface_number(),
+                        dev.usage_page(),
+                        dev.usage(),
+                        dev.interface_number(),
                         dev.product_string().unwrap_or_default());
                 }
                 format!("Robobloq HID 디바이스를 찾을 수 없음 (VID={:#06x}, PID={:#06x})",
@@ -40,11 +56,28 @@ impl DeviceConnection {
             })?;
 
         let path = dev_info.path().to_owned();
-        let device = api.open_path(&path)?;
+        let interface_number = dev_info.interface_number();
+        let device = api.open_path(&path).or_else(|_| {
+            let mut last_err: Option<hidapi::HidError> = None;
+            for d in api
+                .device_list()
+                .filter(|d| d.vendor_id() == VENDOR_ID && d.product_id() == PRODUCT_ID)
+            {
+                match api.open_path(d.path()) {
+                    Ok(device) => return Ok(device),
+                    Err(e) => last_err = Some(e),
+                }
+            }
+            Err(last_err.unwrap_or(hidapi::HidError::HidApiErrorEmpty))
+        })?;
         device.set_blocking_mode(false)?;
 
-        log::info!("HID 디바이스 연결: VID={:#06x}, PID={:#06x} (interface 0)",
-            VENDOR_ID, PRODUCT_ID);
+        log::info!(
+            "HID 디바이스 연결: VID={:#06x}, PID={:#06x} (interface {})",
+            VENDOR_ID,
+            PRODUCT_ID,
+            interface_number
+        );
 
         Ok(Self {
             device,
@@ -54,9 +87,13 @@ impl DeviceConnection {
 
     /// HID Output Report로 전송 (Report ID 0x00 + 데이터)
     fn hid_write(&self, data: &[u8]) -> Result<(), Box<dyn std::error::Error>> {
-        let mut report = Vec::with_capacity(data.len() + 1);
-        report.push(0x00);
-        report.extend_from_slice(data);
+        if data.len() > protocol::MAX_CHUNK_SIZE {
+            return Err(format!("HID write chunk too large: {}", data.len()).into());
+        }
+
+        let mut report = vec![0u8; protocol::MAX_CHUNK_SIZE + 1];
+        report[0] = 0x00;
+        report[1..1 + data.len()].copy_from_slice(data);
         self.device.write(&report)?;
         Ok(())
     }
