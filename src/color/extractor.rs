@@ -45,7 +45,15 @@ fn aspect_grid(width: u32, height: u32) -> (u32, u32) {
 }
 
 /// BGRA 프레임을 cols×rows 그리드로 나눠 각 셀 평균 색상 계산
-fn capture_grid(data: &[u8], pitch: u32, width: u32, height: u32, cols: u32, rows: u32) -> Vec<Rgb> {
+fn capture_grid(
+    data: &[u8],
+    pitch: u32,
+    width: u32,
+    height: u32,
+    cols: u32,
+    rows: u32,
+    sample_width: u32,
+) -> Vec<Rgb> {
     let cell_w = width / cols;
     let cell_h = height / rows;
     let step = 4u32.max(cell_w / 8).max(cell_h / 8); // 다운샘플링
@@ -54,10 +62,24 @@ fn capture_grid(data: &[u8], pitch: u32, width: u32, height: u32, cols: u32, row
 
     for row in 0..rows {
         for col in 0..cols {
-            let x0 = col * cell_w;
-            let y0 = row * cell_h;
-            let x1 = ((col + 1) * cell_w).min(width);
-            let y1 = ((row + 1) * cell_h).min(height);
+            let mut x0 = col * cell_w;
+            let mut y0 = row * cell_h;
+            let mut x1 = ((col + 1) * cell_w).min(width);
+            let mut y1 = ((row + 1) * cell_h).min(height);
+
+            if sample_width > 0 {
+                if row == 0 {
+                    y1 = (y0 + sample_width).min(y1);
+                } else if row + 1 == rows {
+                    y0 = y1.saturating_sub(sample_width);
+                }
+
+                if col == 0 {
+                    x1 = (x0 + sample_width).min(x1);
+                } else if col + 1 == cols {
+                    x0 = x1.saturating_sub(sample_width);
+                }
+            }
 
             let mut r_sum = 0u64;
             let mut g_sum = 0u64;
@@ -187,6 +209,7 @@ pub struct ColorExtractor {
     cols: u32,
     rows: u32,
     lamp_count: u32,
+    sample_width: u32,
     gamma: f32,
     saturation: f32,
     light_compression: bool,
@@ -203,6 +226,7 @@ impl ColorExtractor {
     pub fn update_config(
         &mut self,
         lamp_count: u32,
+        sample_width: u32,
         gamma: f32,
         saturation: f32,
         light_compression: bool,
@@ -214,6 +238,7 @@ impl ColorExtractor {
             self.lamp_count = lamp_count;
             self.cols = 0; // 그리드 재계산 강제
         }
+        self.sample_width = sample_width;
         self.gamma = gamma;
         self.saturation = saturation;
         self.light_compression = light_compression;
@@ -224,7 +249,7 @@ impl ColorExtractor {
 
     pub fn new(
         lamps_amount: u32,
-        _sample_width: u32,
+        sample_width: u32,
         gamma: f32,
         saturation: f32,
         light_compression: bool,
@@ -236,6 +261,7 @@ impl ColorExtractor {
             cols: 0,
             rows: 0,
             lamp_count: lamps_amount,
+            sample_width,
             gamma,
             saturation,
             light_compression,
@@ -257,7 +283,15 @@ impl ColorExtractor {
         }
 
         // 2. 화면 → 그리드 셀 평균 색상
-        let grid = capture_grid(data, pitch, width, height, self.cols, self.rows);
+        let grid = capture_grid(
+            data,
+            pitch,
+            width,
+            height,
+            self.cols,
+            self.rows,
+            self.sample_width,
+        );
 
         // 3. 가장자리 색상 추출
         let border = extract_border_colors(&grid, self.cols, self.rows, self.edge_number, self.reverse);

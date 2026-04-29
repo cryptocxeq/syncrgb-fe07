@@ -27,8 +27,10 @@ jobs:
       - name: Build release
         run: cargo build --release
 
-      - name: Upload SyncRGB.exe
+      - name: Upload binaries
         uses: actions/upload-artifact@v4
         with:
           name: SyncRGB-windows
-          path: target/release/SyncRGB.exe
+          path: |
+            target/release/SyncRGB.exe
+            target/release/hid_probe.exe

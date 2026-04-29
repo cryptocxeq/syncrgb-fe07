@@ -153,7 +153,7 @@ fn capture_loop(
             turn_off_on_black = c.app.turn_off_on_black;
             black_threshold_frames = c.capture.fps;
             extractor.update_config(
-                c.device.lamps_amount, c.sync.gamma, c.sync.saturation,
+                c.device.lamps_amount, c.capture.sample_width, c.sync.gamma, c.sync.saturation,
                 c.sync.light_compression, c.sync.smoothing, c.sync.reverse, c.sync.edge_number,
             );
         }
@@ -264,7 +264,7 @@ fn sender_loop(
     };
 
     let mut lamps_amount = config.device.lamps_amount;
-    apply_mode(&conn, &effect_cfg, lamps_amount);
+    apply_mode(&conn, &effect_cfg, lamps_amount, wire_map);
     let mut local_version = 0u32;
     let mut send_count = 0u64;
     let mut blanked_by_screen = false;
@@ -300,14 +300,14 @@ fn sender_loop(
             if current_mode != c.effect.mode || effect_cfg_changed(&effect_cfg, &c.effect) {
                 current_mode = c.effect.mode.clone();
                 effect_cfg = c.effect.clone();
-                if !apply_mode(&conn, &effect_cfg, lamps_amount) {
+                if !apply_mode(&conn, &effect_cfg, lamps_amount, wire_map) {
                     // 모드 적용 실패 → 디바이스 재연결 후 재시도
                     log::warn!("모드 적용 실패 — 디바이스 재연결 시도");
                     if let Ok(mut c) = DeviceConnection::connect(&Config::load_or_default().device.com_port) {
                         let _ = c.init_device();
                         let _ = c.set_brightness(brightness);
                         conn = c;
-                        apply_mode(&conn, &effect_cfg, lamps_amount);
+                        apply_mode(&conn, &effect_cfg, lamps_amount, wire_map);
                         send_errors = 0;
                         log::info!("디바이스 재연결 성공");
                     }
@@ -331,7 +331,7 @@ fn sender_loop(
             log::info!("화면 복귀 — LED 복원");
             blanked_by_screen = false;
             let _ = conn.set_brightness(brightness);
-            apply_mode(&conn, &effect_cfg, lamps_amount);
+            apply_mode(&conn, &effect_cfg, lamps_amount, wire_map);
         }
 
         if current_mode == LedMode::Sync {
@@ -367,7 +367,7 @@ fn sender_loop(
                                 let _ = c.init_device();
                                 let _ = c.set_brightness(brightness);
                                 conn = c;
-                                apply_mode(&conn, &effect_cfg, lamps_amount);
+                                apply_mode(&conn, &effect_cfg, lamps_amount, wire_map);
                                 send_errors = 0;
                                 log::info!("디바이스 재연결 성공");
                             }
@@ -399,7 +399,7 @@ fn sender_loop(
                                 let _ = c.init_device();
                                 let _ = c.set_brightness(brightness);
                                 conn = c;
-                                apply_mode(&conn, &effect_cfg, lamps_amount);
+                                apply_mode(&conn, &effect_cfg, lamps_amount, wire_map);
                                 send_errors = 0;
                                 log::info!("디바이스 재연결 성공");
                             }
@@ -423,7 +423,18 @@ fn sender_loop(
                     let r = (effect_cfg.color_r as f32 * bright) as u8;
                     let g = (effect_cfg.color_g as f32 * bright) as u8;
                     let b = (effect_cfg.color_b as f32 * bright) as u8;
-                    match conn.set_section_led(r, g, b, lamps_amount) {
+                    let n = lamps_amount as usize;
+                    let mapped = wire_map.apply(r, g, b);
+                    let mut data = Vec::with_capacity(n * 5);
+                    for i in 0..n {
+                        let idx = (i + 1) as u8;
+                        data.push(idx);
+                        data.push(mapped[0]);
+                        data.push(mapped[1]);
+                        data.push(mapped[2]);
+                        data.push(idx);
+                    }
+                    match conn.set_sync_screen(&data) {
                         Ok(()) => { send_errors = 0; }
                         Err(_) => { send_errors += 1; }
                     }
@@ -460,7 +471,7 @@ fn sender_loop(
                     let _ = c.init_device();
                     let _ = c.set_brightness(brightness);
                     conn = c;
-                    apply_mode(&conn, &effect_cfg, lamps_amount);
+                    apply_mode(&conn, &effect_cfg, lamps_amount, wire_map);
                     send_errors = 0;
                     log::info!("디바이스 재연결 성공");
                 }
@@ -497,7 +508,7 @@ fn effect_cfg_changed(a: &config::EffectConfig, b: &config::EffectConfig) -> boo
 }
 
 /// 모드 적용. 성공 시 true, 실패 시 false 반환.
-fn apply_mode(conn: &DeviceConnection, effect: &config::EffectConfig, lamps_amount: u32) -> bool {
+fn apply_mode(conn: &DeviceConnection, effect: &config::EffectConfig, lamps_amount: u32, wire_map: WireMap) -> bool {
     log::info!("모드 적용: {:?}", effect.mode);
     let result = match effect.mode {
         LedMode::Sync => {
@@ -521,11 +532,31 @@ fn apply_mode(conn: &DeviceConnection, effect: &config::EffectConfig, lamps_amou
             conn.set_led_effect(3, effect.sound_index)
         }
         LedMode::Static => {
-            // setSectionLED로 단색 전송
-            conn.set_section_led(effect.color_r, effect.color_g, effect.color_b, lamps_amount)
+            let n = lamps_amount as usize;
+            let mapped = wire_map.apply(effect.color_r, effect.color_g, effect.color_b);
+            let mut data = Vec::with_capacity(n * 5);
+            for i in 0..n {
+                let idx = (i + 1) as u8;
+                data.push(idx);
+                data.push(mapped[0]);
+                data.push(mapped[1]);
+                data.push(mapped[2]);
+                data.push(idx);
+            }
+            conn.set_sync_screen(&data)
         }
         LedMode::Off => {
-            conn.turn_off()
+            let n = lamps_amount as usize;
+            let mut data = Vec::with_capacity(n * 5);
+            for i in 0..n {
+                let idx = (i + 1) as u8;
+                data.push(idx);
+                data.push(0);
+                data.push(0);
+                data.push(0);
+                data.push(idx);
+            }
+            conn.set_sync_screen(&data)
         }
     };
     match result {
