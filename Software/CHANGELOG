@@ -1,0 +1,604 @@
+    _/        _/            _/          _/                                    _/      
+   _/              _/_/_/  _/_/_/    _/_/_/_/  _/_/_/      _/_/_/    _/_/_/  _/  _/   
+  _/        _/  _/    _/  _/    _/    _/      _/    _/  _/    _/  _/        _/_/      
+ _/        _/  _/    _/  _/    _/    _/      _/    _/  _/    _/  _/        _/  _/     
+_/_/_/_/  _/    _/_/_/  _/    _/      _/_/  _/_/_/      _/_/_/    _/_/_/  _/    _/    
+                   _/                      _/                                         
+              _/_/                        _/                                          
+
+                        github.com/psieg/Lightpack
+                               lightpack.tv
+
+===================================================================================
+#    Software changelog
+===================================================================================
+
+Version 5.11.2.31
+---------------
+January 8, 2022
+
+* Fix HDR flickering on Windows (#255)
+
+Version 5.11.2.30
+---------------
+September 5, 2021
+
+* Fix Lights not working after sleep (#331)
+
+Version 5.11.2.29
+---------------
+July 21, 2021
+
+* Fix LEDs staying on after shutdown (#472)
+* Fix crash on non-AVX hardware in .28 (#464)
+* Preparations for Qt6
+
+Version 5.11.2.28
+---------------
+May 20, 2021
+
+* Add multi-instance mode
+* Fix API regression in .27 (#450)
+
+Version 5.11.2.27
+---------------
+December 7, 2020
+
+* Improved zone placement wizard (fixed)
+
+Version 5.11.2.26
+---------------
+December 6, 2020
+
+* Improved zone placement wizard
+
+Version 5.11.2.25
+---------------
+November 1, 2020
+
+* Fix plugin startup (#396)
+* Optimized DNRGB packets (#402)
+* Disable Dithering by default (#398)
+* Fix incorrect colors on Mac (#399)
+
+Version 5.11.2.24
+---------------
+October 11, 2020
+
+* Add power limit and brightness cap (#342)
+* Add dithering for higher color accuracy
+* Fix some crashes (#354, #368)
+* Fix device initialization (#375, #385)
+
+Version 5.11.2.23
+---------------
+May 29, 2020
+
+* Reduce CPU load using SSE/AVX
+* Fixes to Zone Distributors
+* Tweaks for MacOS grabbing
+* Fix Windows Night Light detection
+* Slowed gamma ramp memory leak (Windows)
+
+Version 5.11.2.22
+---------------
+March 29, 2020
+
+* Support for UDP devices (WARLS, DRGB, DNRGB)
+* Pulseaudio Sound Visualizer
+* Tweaks for Adalight/Adrulight devices
+
+Version 5.11.2.21
+---------------
+January 26, 2020
+
+* Updated self-updater to avoid antivirus false positives (#292)
+
+Version 5.11.2.20
+---------------
+January 20, 2020
+
+* Add new moodlights modes
+* Stop grabbing when device is disconnected (#248)
+* DDupl: handle portrait mode (#253)
+
+Version 5.11.2.19
+---------------
+January 19, 2019
+
+* Fix a crash when using DDupl grabber (#240)
+* Do not retry autoupdates
+
+Version 5.11.2.18
+---------------
+January 18, 2019
+
+* MacOS AV Grabber (#210)
+* Sound Visualizer for MacOS
+* Windows 10 Night Light and MacOS support (#177)
+* Improved DDupl grabbing performance
+* SessionChangeDetector for MacOS (#82)
+* Detect display sleep on Windows (#147)
+* Twin Peaks sound visualizer
+* Grab timing fix (#120)
+* Re-launching opens Settings Window (#142)
+
+Version 5.11.2.17
+---------------
+April 26, 2018
+
+* Fix broken white balance in wizard (#176)
+* Fix stops working after switching display (DDupl) (#181)
+
+Version 5.11.2.16
+---------------
+April 6, 2018
+
+* Add untested higher baud rates (#116)
+* Fix f.lux flickering (#158)
+* Do not create a log file if logging is disabled (#93)
+* Tweaks to the Auto Updater
+* Change the FPS counter to be closer to reality
+
+Version 5.11.2.15
+---------------
+March 21, 2018
+
+* Attempt to reconnect if the device is disconnected (#137)
+
+Version 5.11.2.14
+---------------
+March 20, 2018
+
+* Add automatic self-updater (enabled by default)
+* Add API to persist last set colors when unlocking (#132)
+* Allow up to 512 LEDs for Adalight (#148, #149)
+* Fix API using more than 100 LEDs (#152)
+* Fix F.lux adjustment for multiple monitors (#127)
+* Fix data sent to device during setup wizard (#124)
+
+Version 5.11.2.13
+---------------
+June 17, 2017
+
+* Support F.lux and similar programs (#87)
+* Add API sound commands (#112)
+
+Version 5.11.2.12
+---------------
+April 13, 2017
+
+* Improve macOS performance (#70)
+* Add color calibration page to wizard (#86)
+* Re-enable tray on Linux / Unity (#36)
+* Increase tray icon resolution (#96)
+* Fix API setMode command (#94)
+* Fix lights stay off after resume in certain cases
+* Fix SoundViz using incorrect device after profile switch
+
+Version 5.11.2.11
+---------------
+October 21, 2016
+
+* Recommend DDupl to non-expert users
+* Fix custom offset/rotation not saved (#77)
+* Disable tray if not available (Unity)
+* Reinitialize device after resume (#64)
+
+Version 5.11.2.10
+---------------
+July 27, 2016
+
+* Extend custom distribution (#59)
+* Fix UI/settings bugs (#65)
+* Fix white balance ignored by luminosity threshold (#63)
+* Fix lights turning on themselves (#58)
+
+Version 5.11.2.9
+---------------
+June 12, 2016
+
+* Windows: Add sound visualizer
+* Add custom distribution to wizard (#31)
+* Add overbrighten feature: Increase overall grab brightness
+* Fix a crash when using DDupl and gaming on one of multiple screens
+* Fix timing issue: Wizard finds no devices when launched from Prismatik
+
+Version 5.11.2.8
+---------------
+June 5, 2016
+
+* Grab widgets snap to each other (#40)
+* Ability to toggle the power LED state (#27)
+* Include update check on startup
+
+Version 5.11.2.7
+---------------
+April 30, 2016
+
+* Fix API compatiblity, now on Prismatik API 2.0 (#34)
+* Improved layout for high dpi screens (#33)
+* Fix standby detection and add option to keep lights on after standby (#28)
+* DDupl: different behavior for logon screen and UAC prompts
+
+Version 5.11.2.6
+---------------
+February 21, 2016
+
+* Move DirectX scanning to dedicated thread (#17)
+
+Version 5.11.2.5
+---------------
+February 14, 2016
+
+* Implement missing API get methods (#16)
+* Move DirectX Grabber to dedicated thread (#17)
+
+Version 5.11.2.4
+---------------
+February 7, 2016
+
+* Enable Desktop Duplication grabber to grab screensavers
+* Fix crash when launching configuration wizard
+
+Version 5.11.2.3
+---------------
+September 1, 2015
+
+* Fix constant color shutting off (regression from #10)
+* Fix DX admin message prematurely creating a message loop
+
+Version 5.11.2.2
+---------------
+August 1, 2015
+
+* Removed unnecessary dependencies from installer (#8)
+* Keep sending updates to the device even if no grabbing happened (#10)
+* Fixed crash when deleting profile (woodenshark#42)
+* Desktop Duplication is now the default grabber
+* Live DX enable/disable fix
+
+Version 5.11.2.1
+---------------
+July 23, 2015
+
+* Windows 8 Desktop Duplication API Grabber
+* x64 build with improved DirectX grabbing
+* Qt 5.5
+
+Version 5.11.2
+---------------
+September 30, 2014
+
+* Qt updated to 5.3.2
+* Improved compatibility with Mac OS X 10.10 (Yosemite)
+* Refactored and cleaned up code
+* Wrong debug output formatting fixed
+* Rework command line arguments parsing code
+* Add missing dependency (linqt5serialport5) to deb-package information
+* New command line option: "--set-profile <profile_name>" for switching profile from external programs/scripts
+* New command line option "--debug <level>" changes verbosity level of debug output. Valid values are: high, mid, low, zero. --debug-high and similar command line options from now on are obsolete and will be removed in future versions.
+
+Version 5.11.1
+---------------
+July 4, 2014
+
+* API Server now listen to local interface by default
+* API Server port could be choosed in range 1-49151
+* Fixed: incorrect version displaying in Settings->About
+* Fixed: Mac OS X crash on computers equipped with Retina displays
+* Fixed: command line options (--off, --help)
+* Add new command line option "--on"
+* Mac OS X 10.6.8 support
+* Improved logging of settings values (read/change)
+* Fixed: Mood lamp not saved after restart
+* Code cleanup and refactoring
+
+Version 5.11.0
+---------------
+May 13, 2014
+
+* Ubuntu 14 support
+* Fixed plugin's icon searchpath
+* Fixed zones order mess
+* Remove unnecessary monitor configuration page
+* One more optimization
+* Improved Russian translation
+* Minimize wakeups in ConstantColor/Mood mode
+* Minimize wakeups in inactive mode
+* Add plugin status to plugins list
+* Updates notification is introduced
+* Workaround for "no systray found" problem (issue 362)
+* Thanks to backers in About tab
+* Fixed the issue that leds stay on when OS shutdowns (windows only)
+* Remove icon from OS X's dock
+
+Version 5.10.6
+---------------
+February 18, 2014
+
+* Disable LEDs first on ZonePlacementPage.
+* Maximize default LEDs count in configuratin wizard.
+* Disable AppNap, introduced in OS X 10.9
+
+Version 5.10.5
+---------------
+February 5, 2014
+
+* Temporarly removed xxxEachWidget grabbers
+* Widgets scaling on screen resize
+* Fix multiple screens on Mac
+* Signing OS X, build
+* Fixing LED remapping (3-5 LEDs were tossed)
+* Make Prismatik compileable with MSVS
+* Fix ApiServer.{hpp,cpp} method signature
+* Fix resource handling in WinAPIGrabber class
+* Added 'Run wizard' button
+* Get rid of LD_LIBRARY_PATH
+* Fix potential memory leak in LibraryInjector
+* Minor fixes
+
+Version 5.10.4
+---------------
+December 10, 2013
+
+* Disable ApiAuth by default (please set it after installation if you really need it)
+* Fixing Adalight
+* Speed optimization under Mac OS X
+* Several minor bugs
+
+Version 5.10.3
+---------------
+November 27, 2013
+
+* SysTrayIcon implementation for Unity added
+* Fixed pinging of Lightpacks
+* Crash on device disconnection is fixed
+* Several minor fixes
+
+Version 5.10.1
+---------------
+November 9, 2013
+
+* Settings wizard
+* Support for multiple connected Lightpacks
+* Identification of multiple Lightpacks by serial numbers
+* New plugin support system
+* Hotkeys temporary unavailable
+* Device settings moved to wizard
+* Migrated to Qt5
+
+Version 5.9.6
+---------------
+April 8, 2013
+
+* Fixed issue #317, Last used profile isn't saved
+* Fixed flickering with Adalight devices
+
+Version 5.9.5
+---------------
+April 5, 2013
+
+* Fixed issue #314, Prismatik doesn't work with Adalight. 
+* Fixed wrong grabber after loading
+* Fixed wrong leds count after Prismatik is started
+* Fixed crash when deleting profiles
+* Fixed build process of PythonQt
+
+Version 5.9.4
+---------------
+April 1, 2013
+
+* Average color behind luminosity threshold
+* Fix wrong lightpack mode selection after loading
+* Fix threshold mode selection
+* Fix sidebar inaccessibility after retranslation
+* Other fixes
+
+Versoin sw5.9.3
+---------------
+March 12, 2013
+
+* MacOS X support
+* Fixed hotkeys in MacOS
+* D3D9 hooks
+* XBMC plugin 1.0.6
+* Minor bugfixes
+
+Version sw5.9.1
+---------------
+November 22, 2012
+
+* Brand new UI
+* Brand new name
+* Added embedded Python plugins
+* Extended plugins interface
+* Grabbing in DirectX 10/11 applications
+* New option "Color sequence" for SPI-based devices
+* Up to 255 grab-zones
+* HSL to HSV
+* Scene luminosity level option group
+* Improved hotkeys
+* Many minor fixes and improvements
+
+Version sw5.8.6
+---------------
+January 21, 2012
+
+* Updated design of the grabbing areas
+* New widgets for configure grabbing areas
+* Hotkey for ON / OFF lights
+* Run only one instance of software
+* Fixed work with other USB HID on Mac OS X
+* New API command "?" for list all available commands
+* Each run in a separate log file
+* Many small fixes GUI
+
+Version sw5.8.0
+---------------
+December 28, 2011
+
+* API refactoring
+* Added new commands in API for authorization and help
+* Fixed Mac OS X grabber
+* Adalight and Ardulight devices support
+* Implemented multithreading
+* Added brightness control
+* Turn off lights when exiting application via tray menu
+
+Version sw5.5.0
+---------------
+August 11, 2011
+
+* New hardware with 10 LEDs
+* New algorithm for smoothly change colors
+* Native grabber for X-Window System (Linux)
+* Moodlamp with liquid mode
+* Gamma correction
+* AlienFX support
+* XBMC Plugin
+* API
+
+Version sw4.1.0
+---------------
+brunql, March 23, 2011
+
+* Grab using WinAPI (grab from screen where placed first widget)
+* Added profiles
+* New icons and application image
+* Portable version: store logs and configs in current directory
+* About dialog rewrited: added mercurial revision and links to project on googlecode.com
+* Added information about the version and manufacturer in the description of the executable file
+* Added runtime GUI translation
+* Scale grab widgets on resize screen where placed first widget
+* Fix cursor behavior on MoveMeWidget
+* Added debug level option to main config file
+
+Version sw4.0.9
+---------------
+brunql, February 19, 2011
+
+* Using HIDAPI (https://github.com/signal11/hidapi) for cross-platform HID;
+* Added new class MoveMeWidget for determine parts of desktop for each LEDs;
+* Save size and position of each MoveMeWidget to ini-settigs file;
+* Added checkbox for On/Off AVG colors;
+* Added option for set minimum level of sensitivity;
+* Added icons to tray menu
+* Rename project to Lightpack
+* Fixbug with recreation logs file if size > 1 Mb;
+
+Version sw4.0.0
+---------------
+brunql, January 13, 2011
+
+* See hardware changes for details (hw4.0)
+
+Version sw3.0.3
+---------------
+brunql, December 11, 2010
+
+* Fully support 8 LEDs by software
+* Added logs tab to settings window
+* Added indexes to GrabDesktopWindowLeds labels
+* Bugfix with first tab in settings window
+* Bugfix with finding center of the screen in GrabDesktopWindowLeds (primary screen height and desktop height are differs)
+* Updated "About" dialog: hardware ATmega8 + 8 LEDs
+* Updated "About" dialog: added license GPLv3 with link on www.gnu.org/licenses/gpl-3.0.html 
+
+Version sw3.0.2
+---------------
+brunql, December 11, 2010
+
+* Read and write USB data buffers expanded to 0x20 bytes
+* Rewrite function updateColors() for 8 LEDs
+* Added CMD_NOP to over functions which sends info to device 
+* Intermediate version before fully support 8 LEDs
+
+Version sw3.0.1
+---------------
+brunql, December 8, 2010
+
+* Bugfix with multiply monitors (wrong determine width of screen, using full desktop->width() but need only available witdh of the primary screen) 
+* Right now AmbiligthUSB can be using only with primary screen
+
+Version sw3.0.0
+---------------
+brunql, December 7, 2010
+
+* Split firmware and hardware versions
+* Added option to "Hardware options" for switch on/off "USB send data only if colors changes"
+* In "Hardware options" added option to set smootly delay
+* 
+
+Version sw2.7.7 (release)
+---------------
+brunql, November 12, 2010
+
+* License GPLv3
+* Bugfix: timer options and colors depth didn't sync with device; 
+* Bugfix: if unplug and plug device, it didn't reopen; now, then screen picture changed, device will be reopened;
+* Move changelogs form README.md to different files
+* Using markdown for CHANGELOGs and INSTALL files
+* Rename: AmbilightUSB_Hardware to Firmware; AmbilightUSB_PC to Software; 
+
+Version sw2.7.6
+---------------
+brunql, November 03, 2010
+
+* Windows support
+* Added radio buttons switch colored or white fill of grabbing rects
+* Added new hardware option to set color depth
+* Split code of getting and sending colors in 2 classes
+* Make one *.pro file for windows and linux
+
+Version sw2.7.5
+---------------
+brunql, October 25, 2010
+
+Update GUI:
+
+* All settings now in 2 tabs (software and hardware settings)
+* Added new settings 'white balance' (red, green and blue coefs)
+* Added new settings 'timer prescaler' (1, 8, 64, 256, 1024) and 'timer OCR' (Output Compare Register) settings
+* Eval PWM generation frequency and show it in hardware settings
+
+Timer settings for controlling the PWM frequency
+
+Version sw2.7.4
+---------------
+brunql, October 24, 2010
+
+Rewrote the code to grab screen image and find the average color value of exciting fields
+Added display of exciting fields as filled rectangles in different colors
+Added scroll bars to change the width and height of the exciting fields
+
+Version sw2.7.3
+---------------
+brunql, September 18, 2010
+
+Sets configurations of:
+
+* delay between updates
+* count of pixels (by setting size and steps)
+* show/hide transparent/black background of catching pixels
+
+Shows FPS   
+Added logging to `${HOME}/.ambilight.log`   
+Added saving configurations in `${HOME}/.config/brunql.dev/AmbilightUSB.ini`   
+Start to writing this version log  
+
+
+Version sw2.*
+-------------
+brunql, Summer, 2010
+
+Start to writing Qt based GUI version of PC software.  
+After starting the app is minimized to tray.  
+
+
+Version sw1.*
+-------------
+brunql, Spring, 2010
+
+Console version of PC software  
+Using X11 library to catch pixels colors  
