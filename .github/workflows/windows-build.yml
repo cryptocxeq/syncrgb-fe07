@@ -56,3 +56,4 @@ jobs:
         with:
           name: Prismatik-windows-portable
           path: Software/dist_windows/content
+          if-no-files-found: error
