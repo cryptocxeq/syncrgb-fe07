@@ -22,7 +22,7 @@ jobs:
         with:
           cache: true
           cache-key-prefix: install-qt-action-default
-          version: 6.*
+          version: 6.6.3
           modules: qtserialport
       - name: Cached Bass
         id: cache-bass
